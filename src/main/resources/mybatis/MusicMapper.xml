@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jiehfut.music_code.mapper.MusicMapper">
+
+
+    <!--int insert(String title, String singer, String time, String url, int userid);-->
+    <insert id="insert">
+        insert into music (title, singer, time, url, userid)
+        values (#{title}, #{singer}, #{time}, #{url}, #{userid})
+    </insert>
+
+    <!--List<Music> selectMusicByTitleAndSinger(String title, String singer);-->
+    <select id="selectMusicByTitleAndSinger" resultType="com.jiehfut.music_code.model.Music">
+        select * from music where title = #{title} and singer = #{singer}
+    </select>
+
+    <!--Music findMusicById(int id);-->
+    <select id="findMusicById" resultType="com.jiehfut.music_code.model.Music">
+        select * from music where id = #{id}
+    </select>
+
+
+    <!--int deleteMusicById(int id);-->
+    <delete id="deleteMusicById">
+        delete from music where id = #{id}
+    </delete>
+
+
+    <!--List<Music> findMusicByTitle(String title);-->
+    <select id="findMusicByTitle" resultType="com.jiehfut.music_code.model.Music">
+        select * from music where title like concat('%',#{title},'%')
+    </select>
+
+    <!--List<Music> findMusicBySinger(String singer);-->
+    <select id="findMusicBySinger" resultType="com.jiehfut.music_code.model.Music">
+        select * from music where singer like concat('%',#{singer},'%')
+    </select>
+
+    <!--List<Music> findAllMusic();-->
+    <select id="findAllMusic" resultType="com.jiehfut.music_code.model.Music">
+        select * from music
+    </select>
+
+
+
+</mapper>

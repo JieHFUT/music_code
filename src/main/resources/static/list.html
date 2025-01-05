@@ -100,7 +100,9 @@
                 url:"/lovemusic/likeMusic",
                 type: "post",
                 //发送给后端的数据
-                data: {"id": obj},
+                data: {
+                    "musicId": obj
+                },
                 dataType: "json",
                 success: function (data) {
                     if(data.data===true){
@@ -112,6 +114,50 @@
                 }
             });
         }
+
+        // 查询+删除选中音乐
+        $(function () {
+            //新增函数
+            $("#submit1").click(function () {
+                //获取exampleInputName2当中的值给name
+                var name = $("#exampleInputName2").val();
+                load(name);
+            });
+            //当load这个函数执行成功，则执行done当中的回调函数
+            $.when(load).done(function () {
+                //选取所有类型为CheckBox的元素
+                $("#delete").click(function () {
+                    var i=0;
+                    var id=new Array();
+                    //遍历checkbox
+                    $("input:checkbox").each(function() {
+                        //如果被选中,this代表发生事件的dom元素，<input>
+                        if($(this).is(':checked')){
+                            //获取id的值，存储到id数组当中
+                            id[i] = $(this).attr("id");
+                            i++;
+                        }
+                    });
+                    console.log(id);
+                    //发送ajax请求
+                    $.ajax({
+                        url:"/music/deleteSel",
+                        //将id数组，发送给deleteSelectedServlet
+                        data:{"ids":id},
+                        type: "POST",
+                        dataType:"json",
+                        success:function (data) {
+                            if(data.data===true){
+                                alert("删除成功");
+                                window.location.href="list.html";
+                            }else{
+                                alert("删除失败");
+                            }
+                        }
+                    });
+                });
+            });
+        });
     </script>
 </head>
 

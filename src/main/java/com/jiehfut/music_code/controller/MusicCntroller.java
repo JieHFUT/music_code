@@ -1,5 +1,6 @@
 package com.jiehfut.music_code.controller;
 
+import com.jiehfut.music_code.mapper.LoveMusicMapper;
 import com.jiehfut.music_code.mapper.MusicMapper;
 import com.jiehfut.music_code.model.Music;
 import com.jiehfut.music_code.model.User;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,6 +28,9 @@ public class MusicCntroller {
 
     @Autowired
     private MusicMapper musicMapper;
+
+    @Autowired
+    private LoveMusicMapper loveMusicMapper;
 
     @Value("${music.local.path}")
     private String SAVE_PATH;
@@ -141,7 +144,9 @@ public class MusicCntroller {
             File file = new File(path);
             if (file.delete()){
                 // todo: 数据库已经删除完成，如果服务器删除失败，能否回退数据库删除操作
-
+                // 删除某一首音乐以后，同步删除收藏表中的关于这首音乐的所有信息
+                int i = loveMusicMapper.deleteLoveMusicByMusicId(id);
+                
                 return new ResponseBodyMessage<>(0, "删除成功", true);
             } else {
                 return new ResponseBodyMessage<>(-1, "服务器操作失败", false);
@@ -218,8 +223,11 @@ public class MusicCntroller {
         } else {
             return new ResponseBodyMessage<>(0, "查询歌曲信息如下：", musicByTitle);
         }
-
     }
+
+
+
+
 
 
 

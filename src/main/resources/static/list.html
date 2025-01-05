@@ -32,7 +32,43 @@
 
     <script type="text/javascript">
         <!-- 核心代码实现 -->
-		
+        $(function () {
+            load();
+        });
+        //musicName的值可以为空
+        function load(musicName){
+            $.ajax({
+                url: "/music/findmusic",
+                type:"get",
+                data:{
+                    "title":musicName
+                },
+                dataType: "json",
+                success: function(obj){ // obj 就是 status + message + array
+                    console.log(obj);
+                    var data = obj.data;
+                    console.log(data.length);
+                    var s = '';
+                    for (var i = 0; i < data.length; i++) {
+                        var musicUrl = data[i].url+".mp3";
+                        //console.log(musicUrl);
+                        s += '<tr>';
+                        s += '<th> <input id="'+data[i].id+'"type="checkbox"> </th>';
+                        s += '<td>' + data[i].title + '</td>';
+                        s += '<td>' + data[i].singer + '</td>';
+                        s += '<td> <button class="btn btn-primary" onclick="playerSong(\''+musicUrl+'\')" >播放歌曲</button>' +
+                             '</td>';
+                        s += '<td> <button class="btn btn-primary" onclick="deleteInfo('+ data[i].id + ')">删除</button>' +
+                             '&nbsp' +
+                             '<button class="btn btn-primary" onclick="loveInfo('+ data[i].id + ')">喜欢</button>'+
+                             '</td>';
+                        s += '</tr>';
+                    }
+                    $("#info").html(s);//把拼接好的页面添加到info的id下
+                }
+            });
+        }
+
     </script>
 </head>
 
@@ -62,7 +98,16 @@
             <th>操作</th>
         </tr>
         <tbody id="info" valign="middle">
-
+        <!--<tr>
+                <th><input id="12" type="checkbox"></th>
+                <td>三国英雄</td>
+                <td>林俊杰</td>
+                <td><button class="btn btn-primary" onclick="playerSong('/music/get?path=E:/code/music_code/music/三国恋-Tank.mp3')">播放歌曲</button></td>
+                <td>
+                    <button class="btn btn-primary" onclick="deleteInfo(2)">删除</button>
+                    <button class="btn btn-primary" onclick="loveInfo(2)">喜欢</button>
+                </td>
+            </tr>-->
         </tbody>
     </table>
 </div>

@@ -7,6 +7,7 @@ import com.jiehfut.music_code.model.User;
 import com.jiehfut.music_code.utils.Constant;
 import com.jiehfut.music_code.utils.ResponseBodyMessage;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,8 @@ public class MusicCntroller {
     @RequestMapping("/upload")
     public ResponseBodyMessage<Boolean> insertMusic(@RequestParam String singer,
                                                     @RequestParam("filename") MultipartFile file,
-                                                    HttpServletRequest request) {
+                                                    HttpServletRequest request,
+                                                    HttpServletResponse response) throws IOException {
         // 1.检查是否已经登陆
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute(Constant.USERINFO_SESSION_KEY) == null) {
@@ -90,6 +92,8 @@ public class MusicCntroller {
         int insert = musicMapper.insert(title, singer, time, url, userid);
         if (insert == 1) {
             // 数据库插入成功
+            // 上传成功重定向到列表页面
+            response.sendRedirect("/list.html");
             return new ResponseBodyMessage<>(0, "服务器 && 数据库文件上传成功", true);
         } else {
             // 数据库插入失败
@@ -146,7 +150,7 @@ public class MusicCntroller {
                 // todo: 数据库已经删除完成，如果服务器删除失败，能否回退数据库删除操作
                 // 删除某一首音乐以后，同步删除收藏表中的关于这首音乐的所有信息
                 int i = loveMusicMapper.deleteLoveMusicByMusicId(id);
-                
+
                 return new ResponseBodyMessage<>(0, "删除成功", true);
             } else {
                 return new ResponseBodyMessage<>(-1, "服务器操作失败", false);
@@ -202,7 +206,7 @@ public class MusicCntroller {
      * @return ResponseBodyMessage<List<Music>>
      */
     @RequestMapping("/findmusic")
-    public ResponseBodyMessage<List<Music>> findMusicByTitle(@RequestParam String title) {
+    public ResponseBodyMessage<List<Music>> findMusicByTitle(@RequestParam(required = false) String title) {
 
         if (null == title || "".equals(title)) {
             // 说明没有传递信息，查询全部歌曲

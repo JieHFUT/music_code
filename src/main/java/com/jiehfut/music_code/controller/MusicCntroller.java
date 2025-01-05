@@ -85,7 +85,7 @@ public class MusicCntroller {
          * 1.播放音乐的时候，客户端发送请求
          *
          */
-        String url = "/music/get?path=" + path;  // => /music/get?path=E:/code/music_code/music/xxx-xxx
+        String url = "/music/get?path=" + title + "-" + singer;;  // => /music/get?path=xxx-xxx
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
         String time = sdf.format(new Date()); // 2025/01/03
 
@@ -141,11 +141,11 @@ public class MusicCntroller {
         int deleted = musicMapper.deleteMusicById(id);
         if (deleted == 1) {
             // 数据库操作成功
-            String url = music.getUrl(); // => /music/get?path=E:/code/music_code/music/三国恋-Tank
-            String path = url.substring(url.indexOf("=") + 1); // E:/code/music_code/music/三国恋-Tank
+            String url = music.getUrl(); // => /music/get?path=三国恋-Tank
+            String path = url.substring(url.indexOf("=") + 1); // 三国恋-Tank
             System.out.println("path = " + path);
 
-            File file = new File(path);
+            File file = new File(SAVE_PATH + "/" + path);
             if (file.delete()){
                 // todo: 数据库已经删除完成，如果服务器删除失败，能否回退数据库删除操作
                 // 删除某一首音乐以后，同步删除收藏表中的关于这首音乐的所有信息
